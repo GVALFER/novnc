@@ -1,0 +1,25 @@
+{
+    "name": "vnc",
+    "version": "1.0.0",
+    "description": "VNC WebSocket Proxy Server",
+    "main": "server.ts",
+    "scripts": {
+        "start": "tsx server.ts",
+        "dev": "tsx watch server.ts",
+        "build": "tsc server.ts --outDir dist",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "dependencies": {
+        "ws": "^8.18.3"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/ws": "^8.18.1",
+        "tsx": "^4.20.6",
+        "typescript": "^5.0.0"
+    }
+}

@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+    vnc-server:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: vnc-websocket-proxy
+        ports:
+            - "3101:3101"
+        environment:
+            - NODE_ENV=production
+            - PORT=3101
+        restart: unless-stopped
+        networks:
+            - vnc-network
+        healthcheck:
+            test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3101"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 40s
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+
+networks:
+    vnc-network:
+        driver: bridge
