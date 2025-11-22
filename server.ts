@@ -14,47 +14,8 @@ const PORT = 3101;
 let wss: WebSocketServer | null = null;
 const activeConnections = new Map<string, VNCConnection>();
 
-// Function to kill any existing process on the port
-const killExistingProcess = (port: number): Promise<void> => {
-    return new Promise((resolve) => {
-        exec(`lsof -ti:${port}`, (error, stdout) => {
-            if (stdout.trim()) {
-                const pid = stdout.trim();
-                console.log(`Killing existing process on port ${port} (PID: ${pid})`);
-                exec(`kill -9 ${pid}`, () => {
-                    setTimeout(resolve, 1000);
-                });
-            } else {
-                resolve();
-            }
-        });
-    });
-};
-
-// Check if port is available
-const checkPort = (port: number): Promise<boolean> => {
-    return new Promise((resolve) => {
-        const server = net.createServer();
-        server.listen(port, () => {
-            server.once("close", () => resolve(true));
-            server.close();
-        });
-        server.on("error", () => resolve(false));
-    });
-};
-
 // Initialize server
-const initServer = async (): Promise<void> => {
-    await killExistingProcess(PORT);
-
-    const isPortFree = await checkPort(PORT);
-    if (!isPortFree) {
-        console.error(
-            `Port ${PORT} is still in use. Please wait a moment or use: kill -9 $(lsof -ti:${PORT})`,
-        );
-        process.exit(1);
-    }
-
+const initServer = (): void => {
     wss = new WebSocketServer({
         port: PORT,
         path: "/vnc",
@@ -171,9 +132,7 @@ const cleanup = (): void => {
     if (wss) {
         wss.close(() => {
             console.log("VNC server closed");
-            exec(`kill -9 $(lsof -ti:${PORT}) 2>/dev/null`, () => {
-                process.exit(0);
-            });
+            process.exit(0);
         });
 
         setTimeout(() => {
@@ -193,7 +152,9 @@ process.on("uncaughtException", (error: Error) => {
 });
 
 // Start the server
-initServer().catch((error) => {
+try {
+    initServer();
+} catch (error) {
     console.error("Failed to start VNC server:", error);
     process.exit(1);
-});
+}
