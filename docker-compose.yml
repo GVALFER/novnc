@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
     vnc-server:
         build:
@@ -9,4 +11,9 @@ services:
             - PORT=3101
         restart: unless-stopped
         healthcheck:
-            disable: false
+            disable: true
+        labels:
+            - "coolify.managed=true"
+            - "traefik.enable=true"
+            - "traefik.http.routers.vnc.rule=Host(`novnc.noc.sh`)"
+            - "traefik.http.services.vnc.loadbalancer.server.port=3101"
