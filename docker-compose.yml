@@ -16,4 +16,6 @@ services:
             - "coolify.managed=true"
             - "traefik.enable=true"
             - "traefik.http.routers.vnc.rule=Host(`novnc.noc.sh`)"
+            - "traefik.http.routers.vnc.entrypoints=websecure"
+            - "traefik.http.routers.vnc.tls=true"
             - "traefik.http.services.vnc.loadbalancer.server.port=3101"
