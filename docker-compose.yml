@@ -4,12 +4,12 @@ services:
         image: traefik:v2.10
         command:
             - "--providers.docker=true"
-            - "--entrypoints.websecure.address=:443"
+            - "--entrypoints.websecure.address=:8443" # ← Porta 8443
             - "--certificatesresolvers.letsencrypt.acme.email=seu@email.com"
             - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
             - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
         ports:
-            - "443:443"
+            - "8443:8443" # ← Porta 8443
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - ./letsencrypt:/letsencrypt
